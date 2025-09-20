@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HabitHero Premium</title>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="brand">🌟 HabitHero</div>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#habits">Habits</a></li>
+      <li><a href="#dashboard">Dashboard</a></li>
+      <li><a href="#calendar">Calendar</a></li>
+      <li><a href="#store">Store</a></li>
+    </ul>
+    <div class="wallet">🪙 <span id="coin-counter">0</span></div>
+  </nav>
+
+  <!-- Hero -->
+  <section id="home" class="hero">
+    <h1>Build Powerful Habits</h1>
+    <p>Track, improve, and gamify your daily progress with HabitHero.</p>
+    <div class="hero-buttons">
+      <button id="hero-add" class="btn-primary">➕ Add Habit</button>
+      <button onclick="document.getElementById('dashboard').scrollIntoView({behavior:'smooth'})" class="btn-outline">📊 View Dashboard</button>
+    </div>
+  </section>
+
+  <!-- Habits Section -->
+  <section id="habits" class="card-section">
+    <h2>Your Habits</h2>
+    <div class="filters">
+      <button class="filter-btn active" data-filter="All">All</button>
+      <button class="filter-btn" data-filter="Work">Work</button>
+      <button class="filter-btn" data-filter="Fitness">Fitness</button>
+      <button class="filter-btn" data-filter="Health">Health</button>
+      <button class="filter-btn" data-filter="Personal">Personal</button>
+    </div>
+    <div id="habits-grid" class="grid"></div>
+  </section>
+
+  <!-- Dashboard -->
+  <section id="dashboard" class="card-section">
+    <h2>📊 Dashboard</h2>
+    <div class="stats-cards">
+      <div class="stat-card">Habits: <span id="total-habits">0</span></div>
+      <div class="stat-card">Completions: <span id="total-completions">0</span></div>
+      <div class="stat-card">Rate: <span id="avg-rate">0%</span></div>
+    </div>
+    <canvas id="weeklyChart"></canvas>
+  </section>
+
+  <!-- Calendar -->
+  <section id="calendar" class="card-section">
+    <h2>📅 Calendar</h2>
+    <p>Click a day to add/view reflections.</p>
+    <div id="calendar-grid" class="calendar-grid"></div>
+  </section>
+
+  <!-- Achievements -->
+  <section id="achievements" class="card-section">
+    <h2>🏆 Achievements</h2>
+    <ul id="trophy-list" class="trophy-grid"></ul>
+  </section>
+
+  <!-- Store -->
+  <section id="store" class="card-section">
+    <h2>💎 Rewards Store</h2>
+    <div id="store-items" class="grid">
+      <div class="reward-card">
+        <h3>🌊 Ocean Theme</h3>
+        <p>20 Coins</p>
+        <button class="buy-btn" data-theme="ocean" data-cost="20">Unlock</button>
+      </div>
+      <div class="reward-card">
+        <h3>🌅 Sunset Theme</h3>
+        <p>20 Coins</p>
+        <button class="buy-btn" data-theme="sunset" data-cost="20">Unlock</button>
+      </div>
+      <div class="reward-card">
+        <h3>🌌 Neon Theme</h3>
+        <p>30 Coins</p>
+        <button class="buy-btn" data-theme="neon" data-cost="30">Unlock</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Export/Import -->
+  <section id="data" class="card-section">
+    <h2>⚙️ Backup</h2>
+    <button id="export-btn" class="btn-outline">Export Data</button>
+    <input type="file" id="import-input" hidden accept=".json"/>
+    <button id="import-btn" class="btn-outline">Import Data</button>
+  </section>
+
+  <!-- Modals -->
+  <div id="habit-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Edit Habit</h3>
+      <input type="text" id="modal-name" placeholder="Habit name"/>
+      <select id="modal-category">
+        <option>Work</option><option>Fitness</option>
+        <option>Health</option><option>Personal</option>
+      </select>
+      <div class="modal-actions">
+        <button id="modal-save" class="btn-primary">Save</button>
+        <button id="modal-cancel" class="btn-outline">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="reflection-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3>📝 Reflection</h3>
+      <textarea id="reflection-text"></textarea>
+      <div class="modal-actions">
+        <button id="reflection-save" class="btn-primary">Save</button>
+        <button id="reflection-close" class="btn-outline">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
