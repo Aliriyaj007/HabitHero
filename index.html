@@ -1,13 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HabitHero Premium</title>
-  <link rel="stylesheet" href="style.css"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HabitHero 2.0 - Life RPG</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="gamification.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Space+Grotesk:wght@600;700&display=swap"
+    rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
+  <canvas id="confetti-canvas"></canvas>
+
   <!-- Navbar -->
   <nav class="navbar">
     <div class="brand">🌟 HabitHero</div>
@@ -15,25 +25,32 @@
       <li><a href="#home">Home</a></li>
       <li><a href="#habits">Habits</a></li>
       <li><a href="#dashboard">Dashboard</a></li>
-      <li><a href="#calendar">Calendar</a></li>
-      <li><a href="#store">Store</a></li>
+      <li><a href="#focus" onclick="openFocusMode()">Focus Mode</a></li>
     </ul>
-    <div class="wallet">🪙 <span id="coin-counter">0</span></div>
+    <div class="wallet" title="Your Balance">
+      <span>🪙</span> <span id="coin-counter">0</span>
+    </div>
   </nav>
+
+  <!-- RPG Stats Bar -->
+  <section id="rpg-stats">
+    <!-- Injected by JS -->
+  </section>
 
   <!-- Hero -->
   <section id="home" class="hero">
-    <h1>Build Powerful Habits</h1>
-    <p>Track, improve, and gamify your daily progress with HabitHero.</p>
+    <h1>Level Up Your Life</h1>
+    <p>Turn your daily habits into epic quests. Gain XP, level up, and become legendary.</p>
     <div class="hero-buttons">
-      <button id="hero-add" class="btn-primary">➕ Add Habit</button>
-      <button onclick="document.getElementById('dashboard').scrollIntoView({behavior:'smooth'})" class="btn-outline">📊 View Dashboard</button>
+      <button id="hero-add" class="btn-primary">➕ Add New Quest</button>
+      <button onclick="document.getElementById('habits').scrollIntoView({behavior:'smooth'})" class="btn-outline">📜
+        View Quest Log</button>
     </div>
   </section>
 
   <!-- Habits Section -->
   <section id="habits" class="card-section">
-    <h2>Your Habits</h2>
+    <h2>Your Quests</h2>
     <div class="filters">
       <button class="filter-btn active" data-filter="All">All</button>
       <button class="filter-btn" data-filter="Work">Work</button>
@@ -46,69 +63,128 @@
 
   <!-- Dashboard -->
   <section id="dashboard" class="card-section">
-    <h2>📊 Dashboard</h2>
+    <h2>📊 Hero Stats</h2>
     <div class="stats-cards">
-      <div class="stat-card">Habits: <span id="total-habits">0</span></div>
-      <div class="stat-card">Completions: <span id="total-completions">0</span></div>
-      <div class="stat-card">Rate: <span id="avg-rate">0%</span></div>
+      <div class="stat-card">Active Quests <span id="total-habits">0</span></div>
+      <div class="stat-card">Victories <span id="total-completions">0</span></div>
+      <div class="stat-card">Success Rate <span id="avg-rate">0%</span></div>
+    </div>
+    <div id="badge-case" class="badge-grid" style="display:none; margin-bottom: 2rem;">
+      <!-- Badges injected here -->
     </div>
     <canvas id="weeklyChart"></canvas>
+
+    <div id="calendar-container" style="margin-top: 3rem;">
+      <h2>📅 Adventure Log</h2>
+      <div id="calendar-grid" class="calendar-grid"></div>
+    </div>
   </section>
 
-  <!-- Calendar -->
-  <section id="calendar" class="card-section">
-    <h2>📅 Calendar</h2>
-    <p>Click a day to add/view reflections.</p>
-    <div id="calendar-grid" class="calendar-grid"></div>
-  </section>
-
-  <!-- Achievements -->
-  <section id="achievements" class="card-section">
-    <h2>🏆 Achievements</h2>
-    <ul id="trophy-list" class="trophy-grid"></ul>
-  </section>
-
-  <!-- Store -->
   <section id="store" class="card-section">
     <h2>💎 Rewards Store</h2>
     <div id="store-items" class="grid">
-      <div class="reward-card">
-        <h3>🌊 Ocean Theme</h3>
-        <p>20 Coins</p>
-        <button class="buy-btn" data-theme="ocean" data-cost="20">Unlock</button>
+      <!-- Injected by JS -->
+    </div>
+  </section>
+
+  <!-- Settings & Data Capsule -->
+  <section id="settings" class="card-section">
+    <h2>⚙️ Control Center</h2>
+
+    <div class="settings-grid">
+      <!-- Data Capsule -->
+      <div class="data-capsule-container">
+        <h3>💾 Data Capsule</h3>
+        <p class="capsule-status">Status: <span style="color:var(--neon-green)">Secure</span></p>
+
+        <div class="capsule-actions">
+          <button id="export-capsule" class="btn-capsule export">
+            <span class="icon">⬇️</span> Save Game
+          </button>
+          <button id="import-trigger" class="btn-capsule import">
+            <span class="icon">⬆️</span> Load Game
+          </button>
+          <input type="file" id="import-input" hidden accept=".json" />
+        </div>
+        <p class="capsule-info">Backup your legacy. Import to restore.</p>
       </div>
-      <div class="reward-card">
-        <h3>🌅 Sunset Theme</h3>
-        <p>20 Coins</p>
-        <button class="buy-btn" data-theme="sunset" data-cost="20">Unlock</button>
+
+      <!-- Quick Settings -->
+      <div class="setting-card">
+        <h3>🔊 Audio & Haptics</h3>
+        <label class="toggle-switch">
+          <input type="checkbox" id="sound-toggle" checked>
+          <span class="slider"></span>
+        </label>
+        <select id="audio-pack-select" style="margin-top: 0.5rem; font-size: 0.9rem; padding: 0.3rem;">
+          <option value="modern">Modern (Synth)</option>
+          <option value="retro">Retro (8-Bit)</option>
+          <option value="zen">Zen (Chimes)</option>
+        </select>
       </div>
-      <div class="reward-card">
-        <h3>🌌 Neon Theme</h3>
-        <p>30 Coins</p>
-        <button class="buy-btn" data-theme="neon" data-cost="30">Unlock</button>
+
+      <div class="setting-card">
+        <h3>🌌 Global Theme</h3>
+        <select id="global-theme-select">
+          <option value="space">Deep Space (Default)</option>
+          <option value="ocean">Abyssal Ocean</option>
+          <option value="neon">Neon Tokyo</option>
+        </select>
+      </div>
+
+      <div class="setting-card danger-zone">
+        <h3>⚠️ Danger Zone</h3>
+        <button onclick="resetData()" class="btn-delete">Reset All Progress</button>
       </div>
     </div>
   </section>
 
-  <!-- Export/Import -->
-  <section id="data" class="card-section">
-    <h2>⚙️ Backup</h2>
-    <button id="export-btn" class="btn-outline">Export Data</button>
-    <input type="file" id="import-input" hidden accept=".json"/>
-    <button id="import-btn" class="btn-outline">Import Data</button>
-  </section>
+  <!-- Focus Overlay -->
+  <div id="focus-overlay" data-focus-theme="void">
+
+    <div class="focus-controls-top">
+      <select id="focus-theme-select">
+        <option value="void">Void (Default)</option>
+        <option value="cyberpunk">Cyberpunk City</option>
+        <option value="zen">Golden Zen</option>
+      </select>
+    </div>
+
+    <!-- 3D Breathing Orb -->
+    <div id="orb-scene">
+      <div id="orb-container">
+        <div class="orb-ring ring-1"></div>
+        <div class="orb-ring ring-2"></div>
+        <div class="orb-ring ring-3"></div>
+        <div class="orb-core"></div>
+      </div>
+    </div>
+
+    <div id="timer-display">25:00</div>
+
+    <div class="work-controls">
+      <button id="focus-toggle" class="btn-primary">Start Focus</button>
+      <button onclick="closeFocusMode()" class="btn-outline">Exit</button>
+    </div>
+
+    <p id="breath-guide" style="color: #888; margin-top: 2rem; font-size: 0.9rem; opacity: 0.7;">
+      Inhale (4s) • Hold (4s) • Exhale (4s) • Hold (4s)
+    </p>
+  </div>
 
   <!-- Modals -->
   <div id="habit-modal" class="modal hidden">
     <div class="modal-content">
-      <h3>Edit Habit</h3>
-      <input type="text" id="modal-name" placeholder="Habit name"/>
+      <h3>Edit Quest</h3>
+      <input type="text" id="modal-name" placeholder="Quest name" />
       <select id="modal-category">
-        <option>Work</option><option>Fitness</option>
-        <option>Health</option><option>Personal</option>
+        <option value="Work">Work (INT)</option>
+        <option value="Fitness">Fitness (STR)</option>
+        <option value="Health">Health (VIT)</option>
+        <option value="Personal">Personal (CHA)</option>
       </select>
       <div class="modal-actions">
-        <button id="modal-save" class="btn-primary">Save</button>
+        <button id="modal-save" class="btn-primary">Save Changes</button>
         <button id="modal-cancel" class="btn-outline">Cancel</button>
       </div>
     </div>
@@ -116,15 +192,27 @@
 
   <div id="reflection-modal" class="modal hidden">
     <div class="modal-content">
-      <h3>📝 Reflection</h3>
-      <textarea id="reflection-text"></textarea>
+      <h3>📝 Quest Journal</h3>
+      <textarea id="reflection-text" placeholder="What did you learn from this quest?"></textarea>
       <div class="modal-actions">
-        <button id="reflection-save" class="btn-primary">Save</button>
+        <button id="reflection-save" class="btn-primary">Complete & Claim XP</button>
         <button id="reflection-close" class="btn-outline">Close</button>
       </div>
     </div>
   </div>
 
+  <div id="levelup-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>🎉 LEVEL UP!</h2>
+      <span id="levelup-level">5</span>
+      <p>You are growing stronger, Hero.</p>
+      <button onclick="document.getElementById('levelup-modal').classList.add('hidden')"
+        class="btn-primary">CONTINUE</button>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
   <script src="script.js"></script>
 </body>
+
 </html>
